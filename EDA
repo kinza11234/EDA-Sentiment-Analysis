@@ -1,0 +1,100 @@
+import pandas as pd
+import numpy as np
+
+def create_sample_dataframe():
+  """
+  Creates a simple dataframe with three numerical columns and 10 rows.
+
+  Returns:
+    pandas.DataFrame: A dataframe with three columns named "col1", "col2", and "col3", each containing 10 random integers between 0 and 100.
+  """
+  np.random.seed(4)
+  data = {
+      "col1": np.random.randint(0, 100, 10),
+      "col2": np.random.randint(0, 100, 10),
+      "col3": np.random.randint(0, 100, 10),
+  }
+  return pd.DataFrame(data)
+
+sample_df = create_sample_dataframe()
+sample_df
+
+#Random reviews
+reviews = [
+    "Great product! I love it!",
+    "It's okay, but not what I expected.",
+    "Very disappointed with this product.",
+    "Excellent quality and value for money.",
+    "I would not recommend this product.",
+    "It's a good product, but a bit overpriced.",
+    "I'm very satisfied with this purchase.",
+    "It's a great product for the price.",
+    "I'm not sure if I would buy it again.",
+    "I'm very happy with this product.",
+]
+
+
+sample_df["reviews"] = reviews
+
+# Print the dataframe
+sample_df
+
+
+def calculate_correlation(df, col1, col2):
+    """
+    Calculate the correlation coefficient between two columns in a DataFrame.
+
+    Parameters:
+    df (DataFrame): The input DataFrame.
+    col1 (str): The name of the first column.
+    col2 (str): The name of the second column.
+
+    Returns:
+    float: The correlation coefficient.
+    """
+    correlation = df[col1].corr(df[col2])
+    return round(correlation, 4)
+
+
+def calculate_skewness_kurtosis(df, col):
+    """
+    Calculate the skewness and kurtosis of a column in a DataFrame.
+
+    Parameters:
+    df (DataFrame): The input DataFrame.
+    col (str): The name of the column.
+
+    Returns:
+    tuple: A tuple containing skewness and kurtosis.
+    """
+    skewness = df[col].skew()
+    kurtosis = df[col].kurt()
+    return round(skewness, 4), round(kurtosis, 4)
+
+
+
+from textblob import TextBlob
+
+def sentiment_analysis_summary(df, text_col):
+    """
+    Perform sentiment analysis on text data and return the counts of positive, negative, and neutral reviews.
+
+    Parameters:
+    df (DataFrame): The input DataFrame.
+    text_col (str): The name of the column containing text data.
+
+    Returns:
+    dict: A dictionary with counts of positive, negative, and neutral reviews.
+    """
+    positive, negative, neutral = 0, 0, 0
+
+    for review in df[text_col]:
+        analysis = TextBlob(review).sentiment.polarity
+        if analysis > 0:
+            positive += 1
+        elif analysis < 0:
+            negative += 1
+        else:
+            neutral += 1
+
+    return {"positive": positive, "negative": negative, "neutral": neutral}
